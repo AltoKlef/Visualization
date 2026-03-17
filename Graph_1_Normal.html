@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 800px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc3_4", "label": "EUAcc3_4", "shape": "dot", "size": 12.624837899756859}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_883", "label": "EUAcc0_883", "shape": "dot", "size": 12.624837899756859}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_139", "label": "EUAcc1_139", "shape": "dot", "size": 12.625746941348309}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_754", "label": "EUAcc0_754", "shape": "dot", "size": 12.625746941348309}, {"color": "#3498db", "font": {"color": "white"}, "id": "RAcc2", "label": "RAcc2", "shape": "triangle", "size": 23.51165119443216}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc3_17", "label": "EUAcc3_17", "shape": "dot", "size": 10.98566779393465}, {"color": "#3498db", "font": {"color": "white"}, "id": "RAcc1", "label": "RAcc1", "shape": "triangle", "size": 27.1570052165289}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_266", "label": "EUAcc0_266", "shape": "dot", "size": 12.816091972929861}, {"color": "#3498db", "font": {"color": "white"}, "id": "RAcc5", "label": "RAcc5", "shape": "triangle", "size": 26.214221967149705}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_141", "label": "EUAcc2_141", "shape": "dot", "size": 11.664676545158247}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_46", "label": "EUAcc1_46", "shape": "dot", "size": 16.379835812934374}, {"color": "#3498db", "font": {"color": "white"}, "id": "RAcc6", "label": "RAcc6", "shape": "triangle", "size": 21.774540033479013}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_323", "label": "EUAcc0_323", "shape": "dot", "size": 13.63766573505593}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_282", "label": "EUAcc1_282", "shape": "dot", "size": 14.779802087953016}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_210", "label": "EUAcc0_210", "shape": "dot", "size": 14.779802087953016}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_73", "label": "EUAcc0_73", "shape": "dot", "size": 14.672133880787236}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_27", "label": "EUAcc1_27", "shape": "dot", "size": 16.995802169873016}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc3_6", "label": "EUAcc3_6", "shape": "dot", "size": 14.493307912885562}, {"color": "#3498db", "font": {"color": "white"}, "id": "RAcc3", "label": "RAcc3", "shape": "triangle", "size": 26.674624763394228}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_154", "label": "EUAcc2_154", "shape": "dot", "size": 11.810533622996271}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_297", "label": "EUAcc1_297", "shape": "dot", "size": 13.079979220709127}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_105", "label": "EUAcc2_105", "shape": "dot", "size": 13.079979220709127}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_147", "label": "EUAcc2_147", "shape": "dot", "size": 16.811193140705967}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_275", "label": "EUAcc1_275", "shape": "dot", "size": 16.168529727576903}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_91", "label": "EUAcc1_91", "shape": "dot", "size": 15.972573900756691}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_51", "label": "EUAcc2_51", "shape": "dot", "size": 13.539282130602192}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_16", "label": "EUAcc1_16", "shape": "dot", "size": 14.83370292839765}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_14", "label": "EUAcc1_14", "shape": "dot", "size": 14.057428495981167}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_242", "label": "EUAcc1_242", "shape": "dot", "size": 10.304990163775818}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_467", "label": "EUAcc1_467", "shape": "dot", "size": 10.304990163775818}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_198", "label": "EUAcc1_198", "shape": "dot", "size": 13.252785421757789}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_239", "label": "EUAcc1_239", "shape": "dot", "size": 13.75047890275362}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_459", "label": "EUAcc1_459", "shape": "dot", "size": 16.333576793566174}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_41", "label": "EUAcc2_41", "shape": "dot", "size": 11.06932922900293}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_423", "label": "EUAcc1_423", "shape": "dot", "size": 12.13608614058516}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_422", "label": "EUAcc1_422", "shape": "dot", "size": 13.490071202712059}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc3_1", "label": "EUAcc3_1", "shape": "dot", "size": 15.134549152554683}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_289", "label": "EUAcc0_289", "shape": "dot", "size": 15.134549152554683}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_45", "label": "EUAcc0_45", "shape": "dot", "size": 13.929392192184435}, {"color": "#3498db", "font": {"color": "white"}, "id": "RAcc4", "label": "RAcc4", "shape": "triangle", "size": 18.434878125971945}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_286", "label": "EUAcc0_286", "shape": "dot", "size": 12.377683957131392}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_10", "label": "EUAcc2_10", "shape": "dot", "size": 14.81010322134567}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_338", "label": "EUAcc1_338", "shape": "dot", "size": 16.396871500976083}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_421", "label": "EUAcc1_421", "shape": "dot", "size": 12.201069512759648}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_118", "label": "EUAcc2_118", "shape": "dot", "size": 15.051188078066387}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_91", "label": "EUAcc2_91", "shape": "dot", "size": 13.306260274086116}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_98", "label": "EUAcc0_98", "shape": "dot", "size": 14.224367053180867}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_239", "label": "EUAcc0_239", "shape": "dot", "size": 14.224367053180867}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_89", "label": "EUAcc2_89", "shape": "dot", "size": 13.465816786848375}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_86", "label": "EUAcc1_86", "shape": "dot", "size": 11.472825176319308}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_417", "label": "EUAcc1_417", "shape": "dot", "size": 10.947891343984109}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_183", "label": "EUAcc0_183", "shape": "dot", "size": 12.538067177991946}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_42", "label": "EUAcc2_42", "shape": "dot", "size": 14.867402181862518}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_255", "label": "EUAcc1_255", "shape": "dot", "size": 12.52440428616337}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_154", "label": "EUAcc1_154", "shape": "dot", "size": 12.810943435930364}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_84", "label": "EUAcc2_84", "shape": "dot", "size": 16.070346612838513}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_709", "label": "EUAcc0_709", "shape": "dot", "size": 16.070346612838513}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_157", "label": "EUAcc2_157", "shape": "dot", "size": 13.810668970141595}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_46", "label": "EUAcc2_46", "shape": "dot", "size": 12.055941876610328}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_67", "label": "EUAcc2_67", "shape": "dot", "size": 15.510651594866074}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_188", "label": "EUAcc1_188", "shape": "dot", "size": 14.178968174083167}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_131", "label": "EUAcc2_131", "shape": "dot", "size": 12.46583758589247}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_38", "label": "EUAcc0_38", "shape": "dot", "size": 15.349416323301076}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_298", "label": "EUAcc1_298", "shape": "dot", "size": 15.045065212660784}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_200", "label": "EUAcc1_200", "shape": "dot", "size": 15.165612645175788}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_97", "label": "EUAcc1_97", "shape": "dot", "size": 11.167308442529222}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_90", "label": "EUAcc0_90", "shape": "dot", "size": 11.167308442529222}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_293", "label": "EUAcc1_293", "shape": "dot", "size": 10.847076147698658}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_145", "label": "EUAcc1_145", "shape": "dot", "size": 10.847076147698658}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc3_28", "label": "EUAcc3_28", "shape": "dot", "size": 14.927363087900059}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_88", "label": "EUAcc0_88", "shape": "dot", "size": 13.880963153651424}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_366", "label": "EUAcc1_366", "shape": "dot", "size": 11.507550994162386}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_1205", "label": "EUAcc0_1205", "shape": "dot", "size": 11.507550994162386}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_472", "label": "EUAcc1_472", "shape": "dot", "size": 14.034953903082414}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_400", "label": "EUAcc1_400", "shape": "dot", "size": 14.252068555420996}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_158", "label": "EUAcc2_158", "shape": "dot", "size": 13.492981248160373}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_373", "label": "EUAcc1_373", "shape": "dot", "size": 14.644582327830996}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_493", "label": "EUAcc1_493", "shape": "dot", "size": 14.644582327830996}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_200", "label": "EUAcc0_200", "shape": "dot", "size": 13.35687890755684}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_167", "label": "EUAcc0_167", "shape": "dot", "size": 13.100806669239473}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_125", "label": "EUAcc2_125", "shape": "dot", "size": 14.303374606050465}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_45", "label": "EUAcc2_45", "shape": "dot", "size": 11.006593264432064}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_157", "label": "EUAcc1_157", "shape": "dot", "size": 14.264337228690994}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc3_8", "label": "EUAcc3_8", "shape": "dot", "size": 10.748414323753895}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_7", "label": "EUAcc1_7", "shape": "dot", "size": 13.74031990610429}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_74", "label": "EUAcc2_74", "shape": "dot", "size": 13.677106199173476}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_34", "label": "EUAcc0_34", "shape": "dot", "size": 13.007187722773555}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_515", "label": "EUAcc1_515", "shape": "dot", "size": 12.510416499308432}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_24", "label": "EUAcc1_24", "shape": "dot", "size": 16.187521959556992}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_179", "label": "EUAcc1_179", "shape": "dot", "size": 13.726382830574444}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_57", "label": "EUAcc1_57", "shape": "dot", "size": 13.726382830574444}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_87", "label": "EUAcc2_87", "shape": "dot", "size": 12.529170417350322}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_452", "label": "EUAcc1_452", "shape": "dot", "size": 13.216762813761687}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc3_27", "label": "EUAcc3_27", "shape": "dot", "size": 14.439133248732233}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_522", "label": "EUAcc1_522", "shape": "dot", "size": 14.127442791850664}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_128", "label": "EUAcc2_128", "shape": "dot", "size": 13.38989557361285}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_864", "label": "EUAcc0_864", "shape": "dot", "size": 13.38989557361285}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_64", "label": "EUAcc1_64", "shape": "dot", "size": 14.769216392658233}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_483", "label": "EUAcc0_483", "shape": "dot", "size": 14.769216392658233}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_283", "label": "EUAcc1_283", "shape": "dot", "size": 13.250691157277172}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_5", "label": "EUAcc0_5", "shape": "dot", "size": 13.250691157277172}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_911", "label": "EUAcc0_911", "shape": "dot", "size": 11.817423450932665}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_55", "label": "EUAcc2_55", "shape": "dot", "size": 12.480684179818141}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_226", "label": "EUAcc1_226", "shape": "dot", "size": 13.849353711988545}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_99", "label": "EUAcc2_99", "shape": "dot", "size": 14.544173412184001}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_412", "label": "EUAcc1_412", "shape": "dot", "size": 15.188700415325595}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_111", "label": "EUAcc1_111", "shape": "dot", "size": 13.066194057785644}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_218", "label": "EUAcc0_218", "shape": "dot", "size": 16.334692415579465}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_471", "label": "EUAcc1_471", "shape": "dot", "size": 12.787291158095975}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_161", "label": "EUAcc2_161", "shape": "dot", "size": 14.443454962076245}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_162", "label": "EUAcc2_162", "shape": "dot", "size": 14.443454962076245}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc3_32", "label": "EUAcc3_32", "shape": "dot", "size": 18.062578743801517}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_165", "label": "EUAcc1_165", "shape": "dot", "size": 13.28608794769708}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_272", "label": "EUAcc1_272", "shape": "dot", "size": 14.119331135026655}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_85", "label": "EUAcc0_85", "shape": "dot", "size": 14.119331135026655}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_145", "label": "EUAcc2_145", "shape": "dot", "size": 14.645971265515964}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_191", "label": "EUAcc1_191", "shape": "dot", "size": 11.727939524404718}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_437", "label": "EUAcc1_437", "shape": "dot", "size": 12.06861451217959}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_78", "label": "EUAcc2_78", "shape": "dot", "size": 10.685541391894027}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_73", "label": "EUAcc1_73", "shape": "dot", "size": 12.873343348783783}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_830", "label": "EUAcc0_830", "shape": "dot", "size": 12.873343348783783}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc1_258", "label": "EUAcc1_258", "shape": "dot", "size": 11.539912984554647}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc2_150", "label": "EUAcc2_150", "shape": "dot", "size": 14.05690238975502}, {"color": "#3498db", "font": {"color": "white"}, "id": "EUAcc0_79", "label": "EUAcc0_79", "shape": "dot", "size": 14.05690238975502}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#3498db", "from": "EUAcc3_4", "title": "\u0421\u0443\u043c\u043c\u0430: 68897.74\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_883", "value": 68897.74}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_139", "title": "\u0421\u0443\u043c\u043c\u0430: 68945.47\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_754", "value": 68945.47}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 9715.41\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc3_17", "value": 9715.41}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 79303.74\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_266", "value": 79303.74}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 27711.48\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_141", "value": 27711.48}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_46", "title": "\u0421\u0443\u043c\u043c\u0430: 407023.05\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc5", "value": 407023.05}, {"arrows": "to", "color": "#3498db", "from": "RAcc6", "title": "\u0421\u0443\u043c\u043c\u0430: 132326.12\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_323", "value": 132326.12}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_282", "title": "\u0421\u0443\u043c\u043c\u0430: 228465.08\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_210", "value": 228465.08}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 218288.35\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_73", "value": 218288.35}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_27", "title": "\u0421\u0443\u043c\u043c\u0430: 489412.48\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc2", "value": 489412.48}, {"arrows": "to", "color": "#3498db", "from": "EUAcc3_6", "title": "\u0421\u0443\u043c\u043c\u0430: 201898.16\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc5", "value": 201898.16}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 32780.32\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_154", "value": 32780.32}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_297", "title": "\u0421\u0443\u043c\u043c\u0430: 94862.72\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc2_105", "value": 94862.72}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 38017.01\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_147", "value": 38017.01}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 380507.59\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_275", "value": 380507.59}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_91", "title": "\u0421\u0443\u043c\u043c\u0430: 356716.39\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc3", "value": 356716.39}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 125265.18\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_51", "value": 125265.18}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 233646.84\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_16", "value": 233646.84}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 164627.26\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_14", "value": 164627.26}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_242", "title": "\u0421\u0443\u043c\u043c\u0430: 930.19\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc1_467", "value": 930.19}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 105806.13\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_198", "value": 105806.13}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 140660.92\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_239", "value": 140660.92}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 202830.62\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_459", "value": 202830.62}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_41", "title": "\u0421\u0443\u043c\u043c\u0430: 11434.65\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc2", "value": 11434.65}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 45628.64\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_423", "value": 45628.64}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 121805.97\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_422", "value": 121805.97}, {"arrows": "to", "color": "#3498db", "from": "EUAcc3_1", "title": "\u0421\u0443\u043c\u043c\u0430: 263635.95\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_289", "value": 263635.95}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 154401.23\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_45", "value": 154401.23}, {"arrows": "to", "color": "#3498db", "from": "RAcc4", "title": "\u0421\u0443\u043c\u043c\u0430: 56533.81\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_286", "value": 56533.81}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_10", "title": "\u0421\u0443\u043c\u043c\u0430: 231370.93\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc4", "value": 231370.93}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 227353.93\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_338", "value": 227353.93}, {"arrows": "to", "color": "#3498db", "from": "RAcc6", "title": "\u0421\u0443\u043c\u043c\u0430: 48447.07\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_421", "value": 48447.07}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 255145.01\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_118", "value": 255145.01}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 109313.57\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_91", "value": 109313.57}, {"arrows": "to", "color": "#3498db", "from": "EUAcc0_98", "title": "\u0421\u0443\u043c\u043c\u0430: 178452.77\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_239", "value": 178452.77}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 120118.86\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_89", "value": 120118.86}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_86", "title": "\u0421\u0443\u043c\u043c\u0430: 21692.14\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc2", "value": 21692.14}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 8984.98\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_417", "value": 8984.98}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 64417.85\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_183", "value": 64417.85}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_42", "title": "\u0421\u0443\u043c\u043c\u0430: 236916.04\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc1", "value": 236916.04}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 63726.17\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_255", "value": 63726.17}, {"arrows": "to", "color": "#3498db", "from": "RAcc6", "title": "\u0421\u0443\u043c\u043c\u0430: 79014.03\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_154", "value": 79014.03}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_84", "title": "\u0421\u0443\u043c\u043c\u0430: 368491.08\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_709", "value": 368491.08}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_157", "title": "\u0421\u0443\u043c\u043c\u0430: 145211.98\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc5", "value": 145211.98}, {"arrows": "to", "color": "#3498db", "from": "RAcc6", "title": "\u0421\u0443\u043c\u043c\u0430: 42268.97\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_46", "value": 42268.97}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 303672.81\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_67", "value": 303672.81}, {"arrows": "to", "color": "#3498db", "from": "RAcc4", "title": "\u0421\u0443\u043c\u043c\u0430: 174637.75\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_188", "value": 174637.75}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_131", "title": "\u0421\u0443\u043c\u043c\u0430: 60803.55\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc1", "value": 60803.55}, {"arrows": "to", "color": "#3498db", "from": "EUAcc0_38", "title": "\u0421\u0443\u043c\u043c\u0430: 286162.55\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc1", "value": 286162.55}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 254526.83\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_298", "value": 254526.83}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_200", "title": "\u0421\u0443\u043c\u043c\u0430: 266835.54\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc3", "value": 266835.54}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_97", "title": "\u0421\u0443\u043c\u043c\u0430: 13626.09\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_90", "value": 13626.09}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_293", "title": "\u0421\u0443\u043c\u043c\u0430: 7175.38\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc1_145", "value": 7175.38}, {"arrows": "to", "color": "#3498db", "from": "EUAcc3_28", "title": "\u0421\u0443\u043c\u043c\u0430: 242789.07\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc3", "value": 242789.07}, {"arrows": "to", "color": "#3498db", "from": "RAcc6", "title": "\u0421\u0443\u043c\u043c\u0430: 150618.75\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_88", "value": 150618.75}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_366", "title": "\u0421\u0443\u043c\u043c\u0430: 22727.10\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_1205", "value": 22727.1}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 162808.53\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_472", "value": 162808.53}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 180800.87\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_400", "value": 180800.87}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 122009.18\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_158", "value": 122009.18}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_373", "title": "\u0421\u0443\u043c\u043c\u0430: 215721.45\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc1_493", "value": 215721.45}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 112686.36\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_200", "value": 112686.36}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 96150.02\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_167", "value": 96150.02}, {"arrows": "to", "color": "#3498db", "from": "RAcc6", "title": "\u0421\u0443\u043c\u043c\u0430: 185190.33\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_125", "value": 185190.33}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 10132.30\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_45", "value": 10132.3}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_157", "title": "\u0421\u0443\u043c\u043c\u0430: 181845.72\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc1_338", "value": 181845.72}, {"arrows": "to", "color": "#3498db", "from": "EUAcc3_8", "title": "\u0421\u0443\u043c\u043c\u0430: 5601.24\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc6", "value": 5601.24}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_7", "title": "\u0421\u0443\u043c\u043c\u0430: 139899.93\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc4", "value": 139899.93}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_74", "title": "\u0421\u0443\u043c\u043c\u0430: 135211.10\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc5", "value": 135211.1}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 90431.78\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_34", "value": 90431.78}, {"arrows": "to", "color": "#3498db", "from": "RAcc6", "title": "\u0421\u0443\u043c\u043c\u0430: 63021.91\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_515", "value": 63021.91}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_24", "title": "\u0421\u0443\u043c\u043c\u0430: 382854.28\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc1", "value": 382854.28}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_179", "title": "\u0421\u0443\u043c\u043c\u0430: 138859.29\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc1_57", "value": 138859.29}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 63967.03\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_87", "value": 63967.03}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 103475.63\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_452", "value": 103475.63}, {"arrows": "to", "color": "#3498db", "from": "EUAcc3_27", "title": "\u0421\u0443\u043c\u043c\u0430: 164028.76\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc5", "value": 164028.76}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 170357.84\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_522", "value": 170357.84}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_128", "title": "\u0421\u0443\u043c\u043c\u0430: 114913.92\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_864", "value": 114913.92}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_147", "title": "\u0421\u0443\u043c\u043c\u0430: 425906.51\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc1", "value": 425906.51}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_64", "title": "\u0421\u0443\u043c\u043c\u0430: 227454.25\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_483", "value": 227454.25}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_283", "title": "\u0421\u0443\u043c\u043c\u0430: 105669.93\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_5", "value": 105669.93}, {"arrows": "to", "color": "#3498db", "from": "EUAcc3_27", "title": "\u0421\u0443\u043c\u043c\u0430: 33030.28\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_911", "value": 33030.28}, {"arrows": "to", "color": "#3498db", "from": "RAcc4", "title": "\u0421\u0443\u043c\u043c\u0430: 61537.94\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_55", "value": 61537.94}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 148175.24\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_226", "value": 148175.24}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_99", "title": "\u0421\u0443\u043c\u043c\u0430: 206495.12\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc1", "value": 206495.12}, {"arrows": "to", "color": "#3498db", "from": "RAcc2", "title": "\u0421\u0443\u043c\u043c\u0430: 269226.12\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_412", "value": 269226.12}, {"arrows": "to", "color": "#3498db", "from": "RAcc5", "title": "\u0421\u0443\u043c\u043c\u0430: 94015.46\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_111", "value": 94015.46}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 401283.28\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc0_218", "value": 401283.28}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 77689.92\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_471", "value": 77689.92}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_161", "title": "\u0421\u0443\u043c\u043c\u0430: 197442.92\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc2_162", "value": 197442.92}, {"arrows": "to", "color": "#3498db", "from": "RAcc3", "title": "\u0421\u0443\u043c\u043c\u0430: 198311.33\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_459", "value": 198311.33}, {"arrows": "to", "color": "#3498db", "from": "RAcc6", "title": "\u0421\u0443\u043c\u043c\u0430: 650051.76\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc3_32", "value": 650051.76}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_165", "title": "\u0421\u0443\u043c\u043c\u0430: 107983.74\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc3", "value": 107983.74}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_272", "title": "\u0421\u0443\u043c\u043c\u0430: 169688.89\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_85", "value": 169688.89}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 215850.49\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_145", "value": 215850.49}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_191", "title": "\u0421\u0443\u043c\u043c\u0430: 29857.75\n\u0422\u0438\u043f: N_RegWith", "to": "RAcc6", "value": 29857.75}, {"arrows": "to", "color": "#3498db", "from": "RAcc4", "title": "\u0421\u0443\u043c\u043c\u0430: 42791.66\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_437", "value": 42791.66}, {"arrows": "to", "color": "#3498db", "from": "RAcc4", "title": "\u0421\u0443\u043c\u043c\u0430: 4699.67\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc2_78", "value": 4699.67}, {"arrows": "to", "color": "#3498db", "from": "EUAcc1_73", "title": "\u0421\u0443\u043c\u043c\u0430: 82561.02\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_830", "value": 82561.02}, {"arrows": "to", "color": "#3498db", "from": "RAcc1", "title": "\u0421\u0443\u043c\u043c\u0430: 23713.32\n\u0422\u0438\u043f: N-RegDep", "to": "EUAcc1_258", "value": 23713.32}, {"arrows": "to", "color": "#3498db", "from": "EUAcc2_150", "title": "\u0421\u0443\u043c\u043c\u0430: 164584.57\n\u0422\u0438\u043f: N-RegC2C", "to": "EUAcc0_79", "value": 164584.57}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.1,
+            "damping": 0.09,
+            "gravitationalConstant": -10000,
+            "springConstant": 0.001,
+            "springLength": 300
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
